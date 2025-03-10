@@ -7,7 +7,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 
 import com.bumptech.glide.load.engine.cache.DiskCache
 import com.bumptech.glide.signature.ObjectKey
-import edu.cs371m.reddit.glide.RedditDiskCacheFactory
+//import edu.cs371m.reddit.glide.RedditDiskCacheFactory
 
 import org.junit.Before
 import org.junit.Test

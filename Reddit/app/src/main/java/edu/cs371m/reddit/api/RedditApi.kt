@@ -19,11 +19,17 @@ import java.lang.reflect.Type
 
 interface RedditApi {
     // XXX Write me, two function prototypes with Retrofit annotations
+    @GET("r/{subreddit}/hot.json?limit=100")
+    suspend fun getPosts(@Path("subreddit") subreddit: String): ListingResponse
+
     // @GET contains a string appended to the base URL
     // the string is called a path name
     // You can add a parameter to the path name like this
     // @GET("/r/{subreddit}/")
     // suspend fun getPosts(@Path("subreddit") subreddit: String) : xxxxxx
+    @GET("subreddits/popular.json?limit=100")
+    suspend fun getPopularSubreddits(): ListingResponse
+
     // The reddit api docs are here: https://www.reddit.com/dev/api/#GET_hot
 
 

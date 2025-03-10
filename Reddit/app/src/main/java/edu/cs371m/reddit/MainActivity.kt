@@ -17,6 +17,8 @@ import edu.cs371m.reddit.databinding.ActionBarBinding
 import edu.cs371m.reddit.databinding.ActivityMainBinding
 import edu.cs371m.reddit.ui.HomeFragmentDirections
 import edu.cs371m.reddit.ui.MainViewModel
+import android.view.View
+
 
 class MainActivity : AppCompatActivity() {
     // This allows us to do better testing
@@ -61,15 +63,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun actionBarTitleLaunchSubreddit() {
+
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionTitle?.setOnClickListener {
+            hideKeyboard()
+            val direction = HomeFragmentDirections.actionHomeFragmentToSubreddits()
+            navController.safeNavigate(direction)
+        }
+
     }
     private fun actionBarLaunchFavorites() {
+
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionFavorite?.setOnClickListener {
+            hideKeyboard()
+            //val direction = HomeFragmentDirections.actionHomeFragmentToFavorites()
+            //navController.safeNavigate(direction)
+            viewModel.toggleFavoriteMode()
+        }
     }
 
     // XXX check out addTextChangedListener
     private fun actionBarSearch() {
         // XXX Write me
+        actionBarBinding?.actionSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.setSearchTerm(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Hide keyboard when clicking outside the search area
+        actionBarBinding?.actionSearch?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) hideKeyboard()
+        }
+
     }
 
     private fun initDebug() {
@@ -87,6 +118,17 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initTitleObservers() {
         // Observe title changes
+        viewModel.observeTitle().observe(this) { newTitle ->
+            actionBarBinding?.actionTitle?.text = newTitle
+        }
+        viewModel.observeFavorites().observe(this) { favorites ->
+            if (favorites.isEmpty()) {
+                viewModel.hideActionBarFavorites()
+            } else {
+                viewModel.showActionBarFavorites()
+            }
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,11 +140,15 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.let{
             initActionBar(it)
         }
+        //supportActionBar?.setDisplayShowTitleEnabled(true)
 
         initTitleObservers()
         actionBarTitleLaunchSubreddit()
         actionBarLaunchFavorites()
         actionBarSearch()
+
+
+
 
         // Set up our nav graph
         navController = findNavController(R.id.main_frame)

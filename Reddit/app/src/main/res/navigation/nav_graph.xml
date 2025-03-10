@@ -18,10 +18,31 @@
                 android:id="@+id/action_homeFragment_to_onePostFragment"
                 app:destination="@id/onePostFragment" />
     </fragment>
+
     <fragment
             android:id="@+id/subreddits"
             android:name="edu.cs371m.reddit.ui.subreddits.Subreddits"
             android:label="Subreddits" />
+    <fragment
+        android:id="@+id/favorites"
+        android:name="edu.cs371m.reddit.ui.Favorites"
+        android:label="Favorites">
+        <action
+            android:id="@+id/action_favorites_to_onePostFragment"
+            app:destination="@id/onePostFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onePostFragment"
+        android:name="edu.cs371m.reddit.ui.OnePostFragment"
+        >
+        <argument
+            android:name="redditPost"
+            app:argType="edu.cs371m.reddit.api.RedditPost"
+            app:nullable="false"/>
+    </fragment>
+
+
     <!--Add "@+id/favorites" and "@+id/onePostFragment" -->
     <!--Also, an action from favorites to OnePost -->
     <!--OnePost takes a "post" argument of type "edu.cs371m.reddit.api.RedditPost"-->

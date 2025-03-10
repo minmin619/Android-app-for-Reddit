@@ -26,6 +26,7 @@ data class RedditPost (
     @SerializedName("url")
     val imageURL: String,
     @SerializedName("selftext")
+    //val selfText: String?,
     val selfText : SpannableString?,
     @SerializedName("is_video")
     val isVideo : Boolean,
@@ -86,8 +87,28 @@ data class RedditPost (
     // Given a search string, look for it in the RedditPost.  If found,
     // highlight it and return true, otherwise return false.
     fun searchFor(searchTerm: String): Boolean {
+
         // XXX Write me, search both regular posts and subreddit listings,
         // which you determine by if(displayName.isNullOrEmpty()) {
+
+        // Clear existing highlights
+        removeAllCurrentSpans()
+
+        if (searchTerm.isBlank()) return false
+
+        return if (displayName.isNullOrEmpty()) {
+            // Regular post: Search in title and selfText
+            val foundInTitle = findAndSetSpan(title, searchTerm)
+            val foundInSelfText = selfText?.let { findAndSetSpan(it, searchTerm) } ?: false
+            foundInTitle || foundInSelfText
+        } else {
+            // Subreddit listing: Search in displayName and publicDescription
+            val foundInDisplayName = findAndSetSpan(displayName, searchTerm)
+            val foundInPublicDescription = publicDescription?.let { findAndSetSpan(it, searchTerm) } ?: false
+            foundInDisplayName || foundInPublicDescription
+        }
+
+
     }
 
     // NB: This changes the behavior of lists of RedditPosts.  I want posts fetched

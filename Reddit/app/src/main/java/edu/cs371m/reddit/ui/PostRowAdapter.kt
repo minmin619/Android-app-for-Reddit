@@ -1,19 +1,23 @@
 package edu.cs371m.reddit.ui
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
 import edu.cs371m.reddit.R
 import edu.cs371m.reddit.api.RedditPost
 import edu.cs371m.reddit.databinding.RowPostBinding
 import edu.cs371m.reddit.glide.Glide
+//import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
+import edu.cs371m.reddit.glide.Glide.glideOptions
+import edu.cs371m.reddit.glide.Glide.height
+import edu.cs371m.reddit.glide.Glide.width
 
-/**
- * Created by witchel on 8/25/2019
- */
 
 // https://developer.android.com/reference/androidx/recyclerview/widget/ListAdapter
 // Slick adapter that provides submitList, so you don't worry about how to update
@@ -38,5 +42,62 @@ class PostRowAdapter(private val viewModel: MainViewModel,
 
         }
     }
+    //Correctly implemented ViewHolder
+    inner class VH(val binding: RowPostBinding) : RecyclerView.ViewHolder(binding.root)
+
+    //Correctly implemented onCreateViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = RowPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(binding)
+    }
+
+    //Correctly implemented onBindViewHolder
+    override fun onBindViewHolder(holder: VH, position: Int) {
+
+        val post = getItem(position) // Get RedditPost object
+        val binding = holder.binding  // Get binding from ViewHolder
+
+        binding.rowFav.setOnClickListener {
+
+            viewModel.toggleFavorite(post)
+
+            val isFavorite = viewModel.observeFavorites().value?.contains(post) == true
+            binding.rowFav.setImageResource(
+                if (isFavorite) R.drawable.ic_favorite_black_24dp else R.drawable.ic_favorite_border_black_24dp
+            )
+        }
+
+        //Set title
+        binding.title.text = post.title
+
+        //binding.selfText.text = post.selfText ?: ""
+
+        binding.score.text = post.score.toString()
+
+        binding.comments.text = post.commentCount.toString()
+
+
+        //Set selfText or hide it if empty
+        if (post.selfText.isNullOrEmpty()) {
+            binding.selfText.visibility = View.GONE
+        } else {
+            binding.selfText.text = post.selfText
+            binding.selfText.visibility = View.VISIBLE
+        }
+
+
+        //Load image with Glide
+        Glide.glideFetch(
+            post.imageURL ?: "",
+            post.thumbnailURL ?: "",
+            binding.image  
+        )
+
+        //Click listener to open OnePostFragment
+        binding.root.setOnClickListener {
+            navigateToOnePost(post)
+        }
+    }
+
 }
 

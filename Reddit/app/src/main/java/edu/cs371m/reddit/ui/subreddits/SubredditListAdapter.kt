@@ -11,20 +11,42 @@ import edu.cs371m.reddit.glide.Glide
 import edu.cs371m.reddit.ui.MainViewModel
 import edu.cs371m.reddit.ui.PostRowAdapter
 
-// NB: Could probably unify with PostRowAdapter if we had two
-// different VH and override getItemViewType
-// https://medium.com/@droidbyme/android-recyclerview-with-multiple-view-type-multiple-view-holder-af798458763b
-class SubredditListAdapter(private val viewModel: MainViewModel,
-                           private val navController: NavController
-)
-    : ListAdapter<RedditPost, SubredditListAdapter.VH>(PostRowAdapter.RedditDiff()) {
+class SubredditListAdapter(
+    private val viewModel: MainViewModel,
+    private val navController: NavController
+) : ListAdapter<RedditPost, SubredditListAdapter.VH>(PostRowAdapter.RedditDiff()) {
 
-    // ViewHolder pattern
-    inner class VH(val rowSubredditBinding: RowSubredditBinding)
-        : RecyclerView.ViewHolder(rowSubredditBinding.root)
+    // Correctly defined ViewHolder
+    inner class VH(val binding: RowSubredditBinding) : RecyclerView.ViewHolder(binding.root)
 
-        // XXX Write me
+    // Correctly placed onCreateViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = RowSubredditBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(binding)
     }
+
+    // Correctly implemented onBindViewHolder
     override fun onBindViewHolder(holder: VH, position: Int) {
-    // XXX Write me
+        val subreddit = getItem(position)
+        val binding = holder.binding // Correct reference to ViewHolder binding
+
+        // Set subreddit name
+        binding.subRowHeading.text = subreddit.displayName
+
+        // Set subreddit description
+        binding.subRowDetails.text = subreddit.publicDescription ?: "No description available"
+
+        //Corrected Glide usage
+        Glide.glideFetch(
+            subreddit.iconURL ?: "",
+            subreddit.thumbnailURL ?: "",
+            binding.subRowPic
+        )
+
+        // Click listener to change subreddit and navigate back
+        binding.root.setOnClickListener {
+            viewModel.changeSubreddit(subreddit.displayName.toString())
+            navController.popBackStack() // Navigate back to HomeFragment
+        }
+    }
 }

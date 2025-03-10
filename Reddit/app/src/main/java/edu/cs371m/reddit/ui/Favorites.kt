@@ -12,6 +12,7 @@ import edu.cs371m.reddit.databinding.FragmentRvBinding
 
 class Favorites: Fragment(R.layout.fragment_rv) {
     // XXX initialize viewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(javaClass.simpleName, "onViewCreated")
@@ -19,5 +20,26 @@ class Favorites: Fragment(R.layout.fragment_rv) {
         viewModel.setTitle("Favorites")
         viewModel.hideActionBarFavorites()
         // XXX Write me
+        initAdapter(binding)
+
+    }
+
+    // Initialize the RecyclerView adapter and observe favorite posts
+    private fun initAdapter(binding: FragmentRvBinding) {
+        val postRowAdapter = PostRowAdapter(viewModel) { post ->
+            // Clicking a favorite post navigates to OnePostFragment
+            val direction = FavoritesDirections.actionFavoritesToOnePostFragment(post)
+            findNavController().navigate(direction)
+        }
+
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = postRowAdapter
+        }
+
+        // Observe favorite posts and update the adapter
+        viewModel.observeFavorites().observe(viewLifecycleOwner) { favorites ->
+            postRowAdapter.submitList(favorites)
+        }
     }
 }

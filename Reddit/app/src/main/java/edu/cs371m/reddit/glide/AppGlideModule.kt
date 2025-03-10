@@ -30,9 +30,9 @@ class AppGlideModule : AppGlideModule() {
 // context allows it to track lifecycles for your fetch
 // https://stackoverflow.com/questions/31964737/glide-image-loading-with-application-context
 object Glide {
-    private val width = Resources.getSystem().displayMetrics.widthPixels
-    private val height = Resources.getSystem().displayMetrics.heightPixels
-    private var glideOptions = RequestOptions ()
+    val width = Resources.getSystem().displayMetrics.widthPixels
+    val height = Resources.getSystem().displayMetrics.heightPixels
+    var glideOptions = RequestOptions ()
         // Options like CenterCrop are possible, but I like this one best
         // Evidently you need fitCenter or dontTransform.  If you use centerCrop, your
         // list disappears.  I think that was an old bug.
@@ -44,7 +44,7 @@ object Glide {
         return Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY).toString()
     }
     // Please ignore, this is for our testing
-    private fun assetFetch(urlString: String, imageView: ImageView) {
+    fun assetFetch(urlString: String, imageView: ImageView) {
         GlideApp.with(imageView.context)
             .load(urlString)
             .apply(glideOptions)
