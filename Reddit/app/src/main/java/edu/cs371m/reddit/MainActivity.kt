@@ -74,12 +74,16 @@ class MainActivity : AppCompatActivity() {
     }
     private fun actionBarLaunchFavorites() {
 
-        // XXX Write me actionBarBinding, safeNavigate
         actionBarBinding?.actionFavorite?.setOnClickListener {
             hideKeyboard()
-            //val direction = HomeFragmentDirections.actionHomeFragmentToFavorites()
-            //navController.safeNavigate(direction)
             viewModel.toggleFavoriteMode()
+        }
+
+        // ✅ 監聽 Favorite 模式變化，更新愛心圖示
+        viewModel.observeFavoritesMode().observe(this) { isFavoriteMode ->
+            val icon = if (isFavoriteMode) R.drawable.ic_favorite_black_24dp
+            else R.drawable.ic_favorite_border_black_24dp
+            actionBarBinding?.actionFavorite?.setImageResource(icon)
         }
     }
 

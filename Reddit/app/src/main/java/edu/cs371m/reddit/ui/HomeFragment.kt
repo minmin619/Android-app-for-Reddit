@@ -37,7 +37,7 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         }
 
         // Observe posts from ViewModel and update adapter
-        viewModel.observePosts().observe(viewLifecycleOwner) { posts ->
+        viewModel.observeDisplayedPosts().observe(viewLifecycleOwner) { posts ->
             postRowAdapter.submitList(posts)
         }
 

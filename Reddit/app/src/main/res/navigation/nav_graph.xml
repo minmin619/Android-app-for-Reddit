@@ -35,6 +35,8 @@
     <fragment
         android:id="@+id/onePostFragment"
         android:name="edu.cs371m.reddit.ui.OnePostFragment"
+        android:label="One Post"
+        android:layout="@layout/fragment_one_post"
         >
         <argument
             android:name="redditPost"

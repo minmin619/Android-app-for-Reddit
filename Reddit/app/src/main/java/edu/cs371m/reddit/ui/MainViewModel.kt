@@ -132,19 +132,40 @@ class MainViewModel : ViewModel() {
     fun observeFavorites(): LiveData<List<RedditPost>> {
         return favorites.map { it.toList() }
     }
+    fun observeDisplayedPosts(): LiveData<List<RedditPost>> {
+        val displayedPosts = MediatorLiveData<List<RedditPost>>()
+
+        val updatePosts = {
+            val favoriteMode = isFavoriteMode.value ?: false
+            displayedPosts.value = if (favoriteMode) {
+                favorites.value?.toList() ?: emptyList()  // 只顯示收藏的貼文
+            } else {
+                searchPosts.value ?: emptyList()  // 顯示所有貼文
+            }
+        }
+
+        displayedPosts.addSource(isFavoriteMode) { updatePosts() }
+        displayedPosts.addSource(favorites) { updatePosts() }
+        displayedPosts.addSource(searchPosts) { updatePosts() }
+
+        return displayedPosts
+    }
+
 
     // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
-        val searchPost = MediatorLiveData<RedditPost>().apply {
 
-            // XXX Write me
-            value = post  // ✅ 先初始化 LiveData 內容
-            addSource(searchTerm) { term ->
-                post.searchFor(term)
-                postValue(post)  // ✅ 確保 UI 獲得更新
+            val searchPost = MediatorLiveData<RedditPost>().apply {
+
+                // XXX Write me
+                value = post
+                addSource(searchTerm) { term ->
+                    val newPost = post.copy()
+                    newPost.searchFor(term)
+                    postValue(newPost)
+                }
             }
-        }
-        return searchPost
+            return searchPost
     }
 
     /////////////////////////
@@ -177,9 +198,14 @@ class MainViewModel : ViewModel() {
 
     private val isFavoriteMode = MutableLiveData(false)
 
-    // ✅ 切換 Favorite 狀態
+
     fun toggleFavoriteMode() {
         isFavoriteMode.value = !(isFavoriteMode.value ?: false)
+        if (isFavoriteMode.value == true) {
+            setTitle("Favorites")
+        } else {
+            setTitle("r/${subreddit.value}")
+        }
     }
 
     // ✅ 監聽 Favorite 狀態

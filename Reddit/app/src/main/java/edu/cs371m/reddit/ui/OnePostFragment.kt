@@ -35,8 +35,9 @@ class OnePostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val post = args.redditPost
+        viewModel.setTitle("One Post")
 
-        (activity as? AppCompatActivity)?.supportActionBar?.title = post.title
+        (activity as? AppCompatActivity)?.supportActionBar?.title = "One Post"
         binding.onePostSubreddit.text = "r/${post.subreddit}"
         // Display title
         binding.onePostTitle.text = post.title
@@ -46,12 +47,10 @@ class OnePostFragment : Fragment() {
 
         // Display selfText or hide it if empty
         if (!post.selfText.isNullOrEmpty()) {
-            val parsedHtml = HtmlCompat.fromHtml(post.selfText.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
-            val spannableSelfText = SpannableString(parsedHtml)  // 轉換為 SpannableString
-            binding.onePostSelfText.text = spannableSelfText
+            binding.onePostSelfText.text = post.selfText
             binding.onePostSelfText.visibility = View.VISIBLE
         } else {
-            binding.onePostSelfText.text = SpannableString("XXXNo content available.")
+            binding.onePostSelfText.text = SpannableString("No content available.")
             binding.onePostSelfText.visibility = View.VISIBLE
         }
 
@@ -66,10 +65,10 @@ class OnePostFragment : Fragment() {
             binding.onePostTitle.text = updatedPost.title
 
             if (!updatedPost.selfText.isNullOrEmpty()) {
-                val parsedHtml = HtmlCompat.fromHtml(updatedPost.selfText.toString(), HtmlCompat.FROM_HTML_MODE_LEGACY)
-                binding.onePostSelfText.text = SpannableString(parsedHtml)  // 確保 `selfText` 是 `SpannableString`
+
+                binding.onePostSelfText.text = updatedPost.selfText  // 確保 `selfText` 是 `SpannableString`
             } else {
-                binding.onePostSelfText.text = SpannableString("cccccNo content available.")
+                binding.onePostSelfText.text = SpannableString("")
             }
         }
 
