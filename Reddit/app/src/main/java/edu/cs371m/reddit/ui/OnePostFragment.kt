@@ -66,7 +66,7 @@ class OnePostFragment : Fragment() {
 
             if (!updatedPost.selfText.isNullOrEmpty()) {
 
-                binding.onePostSelfText.text = updatedPost.selfText  // 確保 `selfText` 是 `SpannableString`
+                binding.onePostSelfText.text = updatedPost.selfText
             } else {
                 binding.onePostSelfText.text = SpannableString("")
             }

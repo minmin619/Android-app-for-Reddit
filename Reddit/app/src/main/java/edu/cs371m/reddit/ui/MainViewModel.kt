@@ -137,17 +137,25 @@ class MainViewModel : ViewModel() {
 
         val updatePosts = {
             val favoriteMode = isFavoriteMode.value ?: false
-            displayedPosts.value = if (favoriteMode) {
+            val allPosts = if (favoriteMode) {
                 favorites.value?.toList() ?: emptyList()  // 只顯示收藏的貼文
             } else {
                 searchPosts.value ?: emptyList()  // 顯示所有貼文
             }
+
+
+            val filteredPosts = allPosts.filter {
+                it.title.contains(searchTerm.value.orEmpty(), ignoreCase = true) ||
+                        it.selfText?.contains(searchTerm.value.orEmpty(), ignoreCase = true) == true
+            }
+
+            displayedPosts.value = filteredPosts
         }
 
         displayedPosts.addSource(isFavoriteMode) { updatePosts() }
         displayedPosts.addSource(favorites) { updatePosts() }
         displayedPosts.addSource(searchPosts) { updatePosts() }
-
+        displayedPosts.addSource(searchTerm) { updatePosts() }
         return displayedPosts
     }
 
@@ -208,7 +216,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // ✅ 監聽 Favorite 狀態
+
     fun observeFavoritesMode(): LiveData<Boolean> = isFavoriteMode
 
 }
