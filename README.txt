@@ -1,4 +1,4 @@
-# Reddit Lite - Android App for Browsing & Favoriting Reddit Posts
+Reddit Lite - Android App for Browsing & Favoriting Reddit Posts
 
 ## Project Overview
 Reddit Lite is an Android application that allows users to browse, search, and favorite posts from various subreddits using the Reddit API. The app provides a seamless experience with smooth navigation between subreddit feeds, individual posts, and a dedicated favorites section.
