@@ -26,4 +26,4 @@ Reddit Lite is an Android application that allows users to browse, search, and f
 ## Installation & Setup
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/reddit-lite.git
+   https://github.com/minmin619/Android_app_for_Reddit.git
