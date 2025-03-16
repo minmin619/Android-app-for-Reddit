@@ -19,9 +19,9 @@ Reddit Lite is an Android application that allows users to browse, search, and f
 - RecyclerView (for efficient post listing)
 
 ## Screenshots
-| posts_view | Post View | Favorites |
-|-----------|----------|-----------|
-| ![posts_view](Reddit/posts_view.png) | ![Post View](assets/post_view.png) | ![Favorites](assets/favorites.png) |
+| Posts | Subreddit | Favorites | Search |
+|-----------|----------|-----------|----------|
+| ![posts_view](Reddit/posts_view.png) | ![subreddit view](Reddit/subreddit_view.png) | ![Favorites_view](Reddit/Favorites_view.png) | ![search view](Reddit/search_view.png) |
 
 ## Installation & Setup
 1. Clone the repository:
